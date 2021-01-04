@@ -1,0 +1,17 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import LightControl from './body';
+
+
+
+ReactDOM.render(
+  <div>
+    <div className="header" />
+    <div className="nav" />
+    <div className="body">
+      <LightControl host="192.168.1.3" port="9001" />
+    </div>
+  </div >,
+  document.getElementById('root')
+);
