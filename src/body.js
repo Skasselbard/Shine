@@ -1,31 +1,11 @@
 import React from 'react';
 import mqtt from 'mqtt';
-
-class Slider extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { value: '' };
-    }
-    handleChange = (event) => {
-        this.setState({ value: event.target.value });
-    }
-    render() {
-        return <input className="test" type="range" min={this.props.min} max={this.props.max} value={this.state.value} onChange={this.handleChange} />;
-    }
-    componentDidUpdate() {
-
-    }
-}
-
-class Button extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { date: new Date() };
-    }
-    componentDidMount() { }
-    componentWillUnmount() { }
-    render() { return <button onClick={this.props.onClick}>{this.props.label}</button>; }
-}
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import ButtonGroup from 'react-bootstrap/ButtonGroup'
 
 class LightControl extends React.Component {
     constructor(props) {
@@ -52,11 +32,29 @@ class LightControl extends React.Component {
         this.client.publish("control/wohnzimmer/licht/licht", "led(0, 0, 0, 0)")
     }
     render() {
-        return <div >
-            <Button label="An" onClick={this.sendOn} />
-            <Button label="Aus" onClick={this.sendOff} />
-            <Slider />
-        </div >
+        return <Container className='border rounded'>
+            <Row >
+                <Col >
+                    <ButtonGroup toggle className="w-100">
+                        <Button onClick={this.sendOn} >An</Button>
+                        <Button onClick={this.sendOff} >Aus</Button>
+                    </ButtonGroup >
+                </Col>
+            </Row>
+            <Row >
+                <Col>
+                    <Form >
+                        <Container>
+                            <Row className="text-center">
+                                <Col xs="auto" ><Form.Label  >Warm</Form.Label></Col>
+                                <Col ><Form.Control type="range" /></Col>
+                                <Col xs="auto" ><Form.Label>Kalt</Form.Label></Col>
+                            </Row>
+                        </Container>
+                    </Form>
+                </Col>
+            </Row>
+        </Container >
     }
 }
 
