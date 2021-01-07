@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import LightControl from './body';
+import LightControl from './light_control';
 import 'bootstrap/dist/css/bootstrap.css';
 
 

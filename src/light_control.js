@@ -6,18 +6,19 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
+import Alert from 'react-bootstrap/Alert';
 
 class LightControl extends React.Component {
     constructor(props) {
         super(props)
+        this.state = { connected: false }
         let client = mqtt.connect('ws://' + props.host + ':' + props.port)
-        // client.on('connect', function () {
-        //     client.subscribe('presence', function (err) {
-        //         if (!err) {
-        //             client.publish('presence', 'Hello mqtt')
-        //         }
-        //     })
-        // })
+        client.on('connect', function () {
+            this.setState({ connected: true })
+        }.bind(this))
+        client.on('error', function () {
+            if (!client.connected) { this.setState({ connected: false }) }// FIXME: connection update does not worl
+        }.bind(this))
         // client.on('message', function (topic, message) {
         //     console.log(message.toString())
         // })
@@ -32,7 +33,14 @@ class LightControl extends React.Component {
         this.client.publish("control/wohnzimmer/licht/licht", "led(0, 0, 0, 0)")
     }
     render() {
+        const connected = this.state.connected;
         return <Container className='border rounded'>
+            <Row>
+                <Col>{connected ?
+                    <Alert variant="success">Connected</Alert> :
+                    <Alert variant="danger">Disconnected</Alert>
+                }</Col>
+            </Row>
             <Row >
                 <Col >
                     <ButtonGroup toggle className="w-100">
