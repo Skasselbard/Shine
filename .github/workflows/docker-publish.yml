@@ -39,6 +39,8 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: incremented version
+          commit_user_name: VersionBot
+          commit_user_email: bubblebot@dummy.dum
 
 
   # Push image to GitHub Packages.
