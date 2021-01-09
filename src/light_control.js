@@ -16,8 +16,8 @@ class LightControl extends React.Component {
         client.on('connect', function () {
             this.setState({ connected: true })
         }.bind(this))
-        client.on('error', function () {
-            if (!client.connected) { this.setState({ connected: false }) }// FIXME: connection update does not worl
+        client.on('close', function () {
+            if (!client.connected) { this.setState({ connected: false }) }
         }.bind(this))
         // client.on('message', function (topic, message) {
         //     console.log(message.toString())
@@ -33,10 +33,9 @@ class LightControl extends React.Component {
         this.client.publish("control/wohnzimmer/licht/licht", "led(0, 0, 0, 0)")
     }
     render() {
-        const connected = this.state.connected;
         return <Container className='border rounded'>
             <Row>
-                <Col>{connected ?
+                <Col>{this.state.connected ?
                     <Alert variant="success">Connected</Alert> :
                     <Alert variant="danger">Disconnected</Alert>
                 }</Col>
