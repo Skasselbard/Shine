@@ -35,14 +35,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set git Identity
-        run: git config --global user.email "bot@example.com" && git config --global user.name "VersionBot"
+        run: |
+          git config user.email "bot@example.com"
+          git config user.name "VersionBot"
       - name: Update Vesrion
         run: npm version patch
-      # - uses: stefanzweifel/git-auto-commit-action@v4
-      #   with:
-      #     commit_message: incremented version
-      #     commit_user_name: VersionBot
-      #     commit_user_email: bubblebot@dummy.dum
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: incremented version
+          commit_user_name: VersionBot
+          commit_user_email: bubblebot@dummy.dum
 
 
   # Push image to GitHub Packages.
