@@ -22,26 +22,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Run tests
+      - name: Npm tests
+        run: npm run test
+      - name: Docker tests
         run: docker build . --file Dockerfile
 
+  # increments the patch part of the version
+  # other major and minor versionig should be done manually
   versioning:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: paulhatch/semantic-version@v3.1.2
+      - uses: actions/checkout@v2
+      - name: Update Vesrion
+        run: npm version patch
+      - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          branch: "master"
-          tag_prefix: "v"
-          major_pattern: "major:"
-          minor_pattern: "minor:"
-          format: "${major}.${minor}.${patch}-prerelease.${increment}"
-          short_tags: false
+        commit_message: incremented version
 
 
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
-  push:
+  docker push:
     # Ensure test job passes before pushing image.
     needs: versioning
 
@@ -54,13 +56,6 @@ jobs:
       - name: Log into registry
         run: echo "${{ secrets.DOCKER }}" | docker login -u $(echo ${{ github.actor }} | tr '[A-Z]' '[a-z]') --password-stdin
 
-      # - name: Get the version
-      #     id: vars
-      #     run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
-
-      # - name: Build tagged Docker Image
-      #     run: docker build . --file Dockerfile --tag $IMAGE_NAME:${{steps.vars.outputs.tag}}
-
       - name: Build Docker image
         run: docker build . --file Dockerfile --tag $IMAGE_NAME
 
@@ -72,7 +67,7 @@ jobs:
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
 
           # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          VERSION=$(echo npm view shine version)
 
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
