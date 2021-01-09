@@ -40,11 +40,15 @@ jobs:
           git config user.name "VersionBot"
       - name: Update Vesrion
         run: npm version patch
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: incremented version
-          commit_user_name: VersionBot
-          commit_user_email: bubblebot@dummy.dum
+      # - name: Tag Version
+      #   run: echo "v$(npm view shine version)" | git tag
+      - name: Push Back
+        run: git push -u origin HEAD
+      # - uses: stefanzweifel/git-auto-commit-action@v4
+      #   with:
+      #     commit_message: incremented version
+      #     commit_user_name: VersionBot
+      #     commit_user_email: bubblebot@dummy.dum
 
 
   # Push image to GitHub Packages.
