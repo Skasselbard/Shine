@@ -8,6 +8,8 @@ import Col from 'react-bootstrap/Col'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Alert from 'react-bootstrap/Alert';
 
+const MAX = 1023;
+
 class LightControl extends React.Component {
     constructor(props) {
         super(props)
@@ -25,12 +27,22 @@ class LightControl extends React.Component {
         this.client = client
         this.sendOn = this.sendOn.bind(this)
         this.sendOff = this.sendOff.bind(this)
+        this.sliderUpdate = this.sliderUpdate.bind(this)
     }
     sendOn() {
-        this.client.publish("control/wohnzimmer/licht/licht", "led(511, 1023, 0, 128)")
+        this.client.publish(this.props.publish_channel, "led(511, 1023, 0, 128)")
     }
     sendOff() {
-        this.client.publish("control/wohnzimmer/licht/licht", "led(0, 0, 0, 0)")
+        this.client.publish(this.props.publish_channel, "led(0, 0, 0, 0)")
+    }
+    sliderUpdate(e) {
+        const percent = e.target.value / 100
+        const r = 511 * percent
+        const g = MAX * percent
+        const b = 0
+        const w = 128 * percent
+        // console.log(e)
+        this.client.publish(this.props.publish_channel, `led(${r},${g},${b},${w})`)
     }
     render() {
         return <Container className='border rounded'>
@@ -54,7 +66,7 @@ class LightControl extends React.Component {
                         <Container>
                             <Row className="text-center">
                                 <Col xs="auto" ><Form.Label  >Warm</Form.Label></Col>
-                                <Col ><Form.Control type="range" /></Col>
+                                <Col ><Form.Control type="range" onChange={this.sliderUpdate} /></Col>
                                 <Col xs="auto" ><Form.Label>Kalt</Form.Label></Col>
                             </Row>
                         </Container>
