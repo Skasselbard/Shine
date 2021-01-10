@@ -14,7 +14,9 @@ ReactDOM.render(
       <LightControl
         host="192.168.1.3"
         port="9001"
-        publish_channel="control/wohnzimmer/licht/licht" />
+        publish_channel="control/wohnzimmer/licht/licht"
+        max_value="1023"
+      />
     </div>
   </div >,
   document.getElementById('root')
