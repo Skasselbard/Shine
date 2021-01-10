@@ -9,12 +9,9 @@ RUN npm run build
 #####################################################
 
 # execution stage: get the compiled build and execute it
-FROM node:current-alpine
-WORKDIR /shine
+FROM httpd:alpine
 
-COPY --from=build "/src/build/" "./"
-RUN npm install http-server -g
-CMD ["http-server", "-p", "80"]
+COPY --from=build "/src/build/" "/usr/local/apache2/htdocs/"
 
 # its a web service: listen on port 80
 EXPOSE 80
