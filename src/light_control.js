@@ -14,11 +14,12 @@ class LightControl extends React.Component {
             connected: false,
             // TODO: ask for current state over mqtt
             light: {
-                red: Number(props.max_value) / 2,
-                green: Number(props.max_value),
-                blue: 0,
-                white: Number(props.max_value) / 4,
-                intensity: 0.0,
+                red: 100,
+                green: 100,
+                blue: 100,
+                white: 100,
+                temperature: 50,
+                intensity: 0,
             }
         }
         let client = mqtt.connect('ws://' + props.host + ':' + props.port)
@@ -46,20 +47,20 @@ class LightControl extends React.Component {
                 green: values.green != null ? values.green : this.state.light.green,
                 blue: values.blue != null ? values.blue : this.state.light.blue,
                 white: values.white != null ? values.white : this.state.light.white,
+                temperature: values.temperature != null ? values.temperature : this.state.light.temperature,
                 intensity: values.intensity != null ? values.intensity : this.state.light.intensity
             }
         }
         this.setState(new_state)
-        return new_state
+        let ret = { light: {} };
+        // normalize to percentage for mqtt message
+        for (var k in new_state.light) {
+            ret.light[k] = new_state.light[k] / 100.0
+        }
+        return ret
     }
     sendLightState(light_state) {
-        let intense = light_state.light.intensity / 100
-        let r = Math.floor(light_state.light.red * intense)
-        let g = Math.floor(light_state.light.green * intense)
-        let b = Math.floor(light_state.light.blue * intense)
-        let w = Math.floor(light_state.light.white * intense)
-        // TODO: message should be json
-        let message = `led(${r}, ${g}, ${b}, ${w})`
+        let message = JSON.stringify(light_state)
         this.client.publish(this.props.publish_channel, message)
     }
     buttonClick(e) {
@@ -77,7 +78,7 @@ class LightControl extends React.Component {
         this.sendLightState(state)
     }
     temperatureUpdate(e) {
-        let state = this.update_light_state({ white: e.target.value }, null)
+        let state = this.update_light_state({ temperature: e.target.value }, null)
         this.sendLightState(state)
     }
     render() {
@@ -108,9 +109,9 @@ class LightControl extends React.Component {
                                 <Col xs="auto" ><Form.Label  >Warm</Form.Label></Col>
                                 <Col ><Form.Control
                                     type="range"
-                                    min="0"
-                                    max={this.props.max_value}
-                                    value={this.state.light.white}
+                                    // min="0"
+                                    // max={this.props.max_value}
+                                    value={this.state.light.temperature}
                                     onChange={this.temperatureUpdate}
                                 /></Col>
                                 <Col xs="auto" ><Form.Label>Kalt</Form.Label></Col>
