@@ -23,4 +23,4 @@ COPY ./src/configure.sh .
 
 # its a web service: listen on port 80
 EXPOSE 80
-CMD ["configure.sh", "/usr/local/apache2/htdocs/"", "&&", "httpd-foreground"]
+CMD ["configure.sh", "/usr/local/apache2/htdocs/", "&&", "httpd-foreground"]
