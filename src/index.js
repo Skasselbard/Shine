@@ -12,9 +12,9 @@ ReactDOM.render(
     <div className="nav" />
     <div className="body">
       <LightControl
-        host="192.168.1.3"
-        port="9001"
-        publish_channel="control/wohnzimmer/licht/all"
+        host={window.HOSTNAME}
+        port={window.HOSTPORT}
+        publish_channel={window.CHANNEL}
       />
     </div>
   </div >,
